@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda de Joyas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50; 
+            color: white; 
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd; 
+        }
+        input[type="text"] {
+            width: 95%;
+            padding: 5px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Listado de Joyas</h1>
+    <table id="joyasTable">
+        <thead>
+            <tr>
+                <th>ID <input type="text" id="filter-id" onkeyup="filterTable('id')"></th>
+                <th>Nombre <input type="text" id="filter-name" onkeyup="filterTable('name')"></th>
+                <th>Modelo <input type="text" id="filter-model" onkeyup="filterTable('model')"></th>
+                <th>Categoría <input type="text" id="filter-category" onkeyup="filterTable('category')"></th>
+                <th>Metal <input type="text" id="filter-metal" onkeyup="filterTable('metal')"></th>
+                <th>Cadena <input type="text" id="filter-cadena" onkeyup="filterTable('cadena')"></th>
+                <th>Medida <input type="text" id="filter-medida" onkeyup="filterTable('medida')"></th>
+                <th>Valor <input type="text" id="filter-value" onkeyup="filterTable('value')"></th>
+                <th>Stock <input type="text" id="filter-stock" onkeyup="filterTable('stock')"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Las filas de la tabla serán insertadas aquí por JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('http://localhost:3000/joyas')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('joyasTable').getElementsByTagName('tbody')[0];
+                data.forEach(joya => {
+                    let row = tableBody.insertRow();
+                    row.insertCell(0).textContent = joya.id;
+                    row.insertCell(1).textContent = joya.name;
+                    row.insertCell(2).textContent = joya.model;
+                    row.insertCell(3).textContent = joya.category;
+                    row.insertCell(4).textContent = joya.metal;
+                    row.insertCell(5).textContent = joya.cadena;
+                    row.insertCell(6).textContent = joya.medida;
+                    row.insertCell(7).textContent = joya.value;
+                    row.insertCell(8).textContent = joya.stock;
+                });
+            })
+            .catch(error => console.error('Error loading the joyas:', error));
+        });
+
+        function filterTable(column) {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("filter-" + column);
+            filter = input.value.toUpperCase();
+            table = document.getElementById("joyasTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[['id', 'name', 'model', 'category', 'metal', 'cadena', 'medida', 'value', 'stock'].indexOf(column)];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
